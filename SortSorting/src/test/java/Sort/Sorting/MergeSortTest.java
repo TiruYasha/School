@@ -6,14 +6,14 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class MergeSortTest {
 
-//    @Test
-//    public void mergeSortReturnsArray() {
-//        int[] arrayToSort = {1};
-//
-//        int[] result = MergeSort.sort(arrayToSort);
-//
-//        assertArrayEquals(arrayToSort, result);
-//    }
+    @Test
+    public void mergeSortReturnsArray() {
+        int[] arrayToSort = {1};
+
+        int[] result = MergeSort.sort(arrayToSort);
+
+        assertArrayEquals(arrayToSort, result);
+    }
 
     @Test
     public void mergeSortReturnsSortedArray() {

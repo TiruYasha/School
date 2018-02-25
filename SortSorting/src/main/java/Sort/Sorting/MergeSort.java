@@ -41,11 +41,7 @@ public class MergeSort {
             tmpArray[tmpArrayIndex] = arrayToSort[rightIndex];
             merge(arrayToSort, tmpArray, left, leftEnd, rightEnd, leftIndex, rightIndex + 1, tmpArrayIndex + 1);
         }
-        else if (rightIndex > rightEnd) {
-            tmpArray[tmpArrayIndex] = arrayToSort[leftIndex];
-            merge(arrayToSort, tmpArray, left, leftEnd, rightEnd, leftIndex + 1, rightIndex, tmpArrayIndex + 1);
-        }
-        else if (arrayToSort[leftIndex] < arrayToSort[rightIndex]) {
+        else if (rightIndex > rightEnd || arrayToSort[leftIndex] < arrayToSort[rightIndex]) {
             tmpArray[tmpArrayIndex] = arrayToSort[leftIndex];
             merge(arrayToSort, tmpArray, left, leftEnd, rightEnd, leftIndex + 1, rightIndex, tmpArrayIndex + 1);
         }
