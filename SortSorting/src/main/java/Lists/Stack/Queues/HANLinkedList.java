@@ -1,7 +1,5 @@
 package Lists.Stack.Queues;
 
-import java.util.LinkedList;
-
 public class HANLinkedList<T> {
     Node<T> head;
 
