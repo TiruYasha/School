@@ -1,49 +1,65 @@
 package Lists.Stack.Queues;
 
-public class HANLinkedList<T> {
+import java.util.Iterator;
+
+public class HANLinkedList<T> implements Iterable<T>, Iterator<T> {
+
     Node<T> head;
 
-    public HANLinkedList(){
+    private int size = 0;
+    private Node<T> currentNode;
+
+    public HANLinkedList() {
         head = new Node<>();
+        currentNode = head;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     public void addFirst(T value) {
-        if(head.getNextNode() == null){
+        if (head.getNextNode() == null) {
             head.setNextNode(new Node<>(value));
-        } else {
+        }
+        else {
             Node<T> newNode = new Node<>(value);
             newNode.setNextNode(head.getNextNode());
             head.setNextNode(newNode);
         }
+
+        size++;
     }
 
     public void removeFirst() {
-        if(head.getNextNode().getNextNode() == null) {
+        if (head.getNextNode().getNextNode() == null) {
             head.setNextNode(null);
-        }else{
+        }
+        else {
             Node<T> oldNode = head.getNextNode();
             head.setNextNode(oldNode.getNextNode());
             oldNode.setNextNode(null);
         }
+
+        size--;
     }
 
     public void insert(int index, T value) {
-        Node<T> nodeToReferenceTheCorrectIndex = getNode(index -1);
-        insertNode(nodeToReferenceTheCorrectIndex, value);
-    }
-
-    private void insertNode(Node<T> node, T value) {
-        Node<T> nextNode = node.getNextNode();
-        Node<T> newNode = new Node<>(value);
-        newNode.setNextNode(nextNode);
-
-        node.setNextNode(newNode);
+        if (index == 0) {
+            addFirst(value);
+        }
+        else {
+            Node<T> nodeToReferenceTheCorrectIndex = getNode(index - 1);
+            insertNode(nodeToReferenceTheCorrectIndex, value);
+            size++;
+        }
     }
 
     public void delete(int index) {
-        Node<T> nodeToReferenceTheCorrectIndex = getNode(index -1);
+        Node<T> nodeToReferenceTheCorrectIndex = getNode(index - 1);
 
         deleteNodeAfterGivenNode(nodeToReferenceTheCorrectIndex);
+        size--;
     }
 
     private void deleteNodeAfterGivenNode(Node<T> node) {
@@ -58,12 +74,38 @@ public class HANLinkedList<T> {
         return getNode(index).getValue();
     }
 
-    private Node<T> getNode(int index){
+    @Override
+    public boolean hasNext() {
+        return currentNode.getNextNode() != null;
+
+    }
+
+    @Override
+    public T next() {
+        currentNode = currentNode.getNextNode();
+        return currentNode.getValue();
+    }
+
+    private void insertNode(Node<T> node, T value) {
+        Node<T> nextNode = node.getNextNode();
+        Node<T> newNode = new Node<>(value);
+        newNode.setNextNode(nextNode);
+
+        node.setNextNode(newNode);
+    }
+
+    private Node<T> getNode(int index) {
         Node<T> node = head.getNextNode();
 
-        for(int i = 0; i < index; i++) {
+        for (int i = 0; i < index; i++) {
             node = node.getNextNode();
         }
         return node;
+    }
+
+
+    @Override
+    public Iterator<T> iterator() {
+        return this;
     }
 }

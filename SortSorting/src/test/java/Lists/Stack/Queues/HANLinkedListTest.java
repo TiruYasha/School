@@ -3,9 +3,7 @@ package Lists.Stack.Queues;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class HANLinkedListTest {
 
@@ -113,5 +111,47 @@ public class HANLinkedListTest {
         Integer result = sut.get(1);
 
         assertEquals(result, new Integer(2));
+    }
+
+    @Test
+    public void sizeGrowsOnAdd(){
+        sut.addFirst(1);
+
+        int result = sut.getSize();
+
+        assertEquals(result, 1);
+    }
+
+    @Test
+    public void sizeGrowsOnInsert(){
+        sut.insert(0, 1);
+
+        int result = sut.getSize();
+
+        assertEquals(result, 1);
+    }
+
+    @Test
+    public void sizeLowersOnRemove(){
+        sut.addFirst(1);
+        sut.addFirst(2);
+
+        sut.removeFirst();
+
+        int result = sut.getSize();
+
+        assertEquals(result, 1);
+    }
+
+    @Test
+    public void sizeLowersOnDelete(){
+        sut.addFirst(1);
+        sut.addFirst(2);
+
+        sut.delete(0);
+
+        int result = sut.getSize();
+
+        assertEquals(result, 1);
     }
 }
