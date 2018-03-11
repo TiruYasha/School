@@ -7,6 +7,7 @@ public class Node {
 
     private String name;
     private HANLinkedList<Edge> edges;
+    private double distance;
 
     public Node(String name) {
         this.name = name;
@@ -27,6 +28,14 @@ public class Node {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
     @Override
