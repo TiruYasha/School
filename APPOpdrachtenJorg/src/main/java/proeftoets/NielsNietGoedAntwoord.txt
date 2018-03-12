@@ -1,0 +1,90 @@
+package proeftoets;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class GraphMatrix {
+
+    private int currentIndex = 0;
+    private int nrOfNodes;
+    private Map<String, Integer> vertexIndex = new HashMap<>();
+    private Double[][] edges;
+
+    public GraphMatrix(int nrOfNodes) {
+        this.nrOfNodes = nrOfNodes;
+        edges = new Double[nrOfNodes][nrOfNodes];
+    }
+
+    public void addEdge(String v, String w, Double c) {
+        int i = getIndex(v);
+        int j = getIndex(w);
+
+        edges[i][j] = c;
+    }
+
+    private Integer getIndex(String v) {
+        Integer index = vertexIndex.get(v);
+        if(index == null) {
+            vertexIndex.put(v, currentIndex);
+            index = currentIndex;
+            currentIndex++;
+        }
+
+        return index;
+    }
+
+    public boolean isUndirectedConnected() {
+        for (int i = nrOfNodes - 1; i > 0 ; i--) {
+            boolean hasValue = false;
+
+            for (int y = i; y < edges.length; y++) {
+
+
+                for (int x = 0; x < edges.length; x++) {
+                    if(edges[x][y] != null && x < i) hasValue = true;
+                }
+
+                if(!hasValue) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public void print() {
+        for (int i = 0; i < edges.length; i++) {
+            for (int j = 0; j < edges[i].length; j++) {
+                System.out.print(edges[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) {
+        GraphMatrix graph = new GraphMatrix(9);
+
+        graph.addEdge("A", "B", 3.0);
+        graph.addEdge("A", "C", 2.0);
+        graph.addEdge("D", "E", 8.0);
+        graph.addEdge("C", "F", 2.0);
+        graph.addEdge("D", "B", 1.0);
+        graph.addEdge("F", "D", 4.0);
+        graph.addEdge("G", "H", 9.0);
+        graph.addEdge("H", "I", 1.0);
+
+        graph.addEdge("B", "A", 3.0);
+        graph.addEdge("C", "A", 2.0);
+        graph.addEdge("E", "D", 8.0);
+        graph.addEdge("F", "C", 2.0);
+        graph.addEdge("B", "D", 1.0);
+        graph.addEdge("D", "F", 4.0);
+        graph.addEdge("H", "G", 9.0);
+        graph.addEdge("I", "H", 1.0);
+
+        graph.print();
+        System.out.println();
+        System.out.println(graph.isUndirectedConnected());
+    }
+}
