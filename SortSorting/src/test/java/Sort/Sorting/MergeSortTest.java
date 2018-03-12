@@ -2,6 +2,8 @@ package Sort.Sorting;
 
 import org.junit.Test;
 
+import java.util.Random;
+
 import static org.junit.Assert.assertArrayEquals;
 
 public class MergeSortTest {
@@ -23,5 +25,18 @@ public class MergeSortTest {
         int[] result = MergeSort.sort(arrayToSort);
 
         assertArrayEquals(sortedArray, result);
+    }
+
+    @Test
+    public void bigDataSet(){
+        int[] list = new int[1000];
+        Random random = new Random();
+
+        for (int i = 0; i < 1000; i++)
+        {
+            list[i] =  random.nextInt(100000);
+        }
+
+        int[] result = MergeSort.sort(list);
     }
 }
