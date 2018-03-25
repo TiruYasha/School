@@ -29,3 +29,40 @@ stringToNum (h:t) = if (isNumeric [h]) then read (h:t) :: Float else read t :: F
     isNumeric char = case reads char :: [(Integer, String)] of
         [(_, "")] -> True
         _         -> False
+
+-- Write a function that takes an argument x and returns a lazy sequence that has every third number, starting with x. Then, write a function that includes every fifth number, beginning with y. Combine these functions through composition to return every eighth number, beginning with x + y.
+
+third y = [y, (y + 3) ..]
+
+fifth i = [i, (i + 5) ..]
+
+lazyEight x y = zipWith(+) (third x) (fifth y)
+
+
+-- Use a partially applied function to define a function that will return half of a number and another that will append \n to the end of any string.
+
+half = (/2)
+
+whiteLine = (++ "\n")
+
+-- Write a function to determine the greatest common denominator of two integers.
+
+denominators x = divisors x 1 where
+  divisors x by = if (x `mod` by == 0) then by:(divisors x (by + 1)) else (if (by > x) then [] else divisors x ( by + 1))
+    
+myGcd x y = findPair (sortListBy (>=) ((denominators x) ++ (denominators y))) where
+  findPair (h1:h2:t) = if (h1 == h2) then h1 else findPair (h2:t)
+
+-- Create a lazy sequence of prime numbers.
+
+lazyPrime = nextPrime 1 where
+  nextPrime x = if (length (denominators x) <= 2) then x:(nextPrime (x + 1)) else nextPrime(x+1) 
+    
+--
+
+breakLineAt x string = insertBreak x 0 string [] where
+  insertBreak breakPoint wordCount (h:t) collected
+    | wordCount == breakPoint = insertBreak breakPoint 0 (h:t) (collected ++ "\n")
+    | [h] == " "              = insertBreak breakPoint (wordCount + 1) t (collected ++ [h])
+    | t == []                 = collected ++ [h]
+    | otherwise               = insertBreak breakPoint wordCount t (collected ++ [h])
