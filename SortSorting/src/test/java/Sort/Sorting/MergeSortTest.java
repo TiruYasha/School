@@ -2,6 +2,7 @@ package Sort.Sorting;
 
 import org.junit.Test;
 
+import java.util.Random;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -35,5 +36,18 @@ public class MergeSortTest {
         Integer[] result =  MergeSort.mergeSort(IntStream.of(arrayToSort).boxed().toArray(Integer[]::new));
 
         assertArrayEquals(sortedArray, result);
+    }
+
+    @Test
+    public void bigDataSet(){
+        int[] list = new int[1000];
+        Random random = new Random();
+
+        for (int i = 0; i < 1000; i++)
+        {
+            list[i] =  random.nextInt(100000);
+        }
+
+        int[] result = MergeSort.sortRecursive(list);
     }
 }

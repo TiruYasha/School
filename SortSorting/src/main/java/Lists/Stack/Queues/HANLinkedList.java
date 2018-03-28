@@ -62,14 +62,6 @@ public class HANLinkedList<T> implements Iterable<T>, Iterator<T> {
         size--;
     }
 
-    private void deleteNodeAfterGivenNode(Node<T> node) {
-        Node<T> nodeToDelete = node.getNextNode();
-        Node<T> nodeToKeep = nodeToDelete.getNextNode();
-
-        node.setNextNode(nodeToKeep);
-        nodeToDelete.setNextNode(null);
-    }
-
     public T get(int index) {
         return getNode(index).getValue();
     }
@@ -84,6 +76,11 @@ public class HANLinkedList<T> implements Iterable<T>, Iterator<T> {
     public T next() {
         currentNode = currentNode.getNextNode();
         return currentNode.getValue();
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return this;
     }
 
     private void insertNode(Node<T> node, T value) {
@@ -103,9 +100,11 @@ public class HANLinkedList<T> implements Iterable<T>, Iterator<T> {
         return node;
     }
 
+    private void deleteNodeAfterGivenNode(Node<T> node) {
+        Node<T> nodeToDelete = node.getNextNode();
+        Node<T> nodeToKeep = nodeToDelete.getNextNode();
 
-    @Override
-    public Iterator<T> iterator() {
-        return this;
+        node.setNextNode(nodeToKeep);
+        nodeToDelete.setNextNode(null);
     }
 }
