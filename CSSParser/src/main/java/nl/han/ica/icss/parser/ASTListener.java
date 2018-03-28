@@ -16,7 +16,28 @@ public class ASTListener extends ICSSBaseListener {
 	public ASTListener() {
 		ast = new AST();
 		currentContainer = new Stack<>();
+
+		//ast.root.addChild(new ConstantDefinition());
+
+
+
 	}
+
+	//Constantdefinition wordt gegenereerd
+	// Maak een enterconstantreference om die knoop value eruit te halen
+//	public void EnterConstDefinition(ICSSParser.ConstantDefinition ctx){
+//	    ConstantDefinition def = new ConstantDefinition();
+//
+//	    //def.name = new ConstantReference(ctx.getChild(1).getText());
+//	    def.expression = new PixelLiteral("10px");
+//
+//	    //push de constantdefinition
+//	    currentContainer.push(def);
+//
+//	    //Dan kun je in de constantreference peek voor de value
+//
+//	    ast.root.addChild(def);
+//    }
 
     public AST getAST() {
         return ast;
