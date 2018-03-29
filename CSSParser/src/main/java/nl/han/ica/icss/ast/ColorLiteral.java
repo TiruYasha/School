@@ -10,4 +10,9 @@ public class ColorLiteral extends Literal {
     public String getNodeLabel() {
         return "Color literal (" + value + ")";
     }
+
+    @Override
+    public String toString() {
+        return value;
+    }
 }

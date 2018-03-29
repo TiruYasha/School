@@ -11,5 +11,28 @@ public class EvalExpressions implements Transform {
     @Override
     public void apply(AST ast) {
         symboltable = ast.symboltable;
+
+        transform(ast.root);
+    }
+
+    private void transform(ASTNode node) {
+
+        node.getChildren().forEach(this::transform);
+
+        if(!(node instanceof Declaration))
+            return;
+
+        Declaration declaration = (Declaration) node;
+
+        if(!(declaration.expression instanceof ConstantReference))
+            return;
+
+        ConstantReference expression =  (ConstantReference) declaration.expression;
+
+        if(symboltable.containsKey( expression.name)){
+            ConstantDefinition def = symboltable.get(expression.name);
+
+            declaration.expression = def.expression;
+        }
     }
 }

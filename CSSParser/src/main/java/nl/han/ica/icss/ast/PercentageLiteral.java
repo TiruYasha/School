@@ -13,4 +13,9 @@ public class PercentageLiteral extends Literal {
     public String getNodeLabel() {
         return "Percentage literal (" + value + ")";
     }
+
+    @Override
+    public String toString() {
+        return value + "%";
+    }
 }

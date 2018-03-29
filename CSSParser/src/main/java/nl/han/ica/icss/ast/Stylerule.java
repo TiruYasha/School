@@ -43,4 +43,22 @@ public class Stylerule extends ASTNode {
         else
             body.remove(child);
     }
+
+	@Override
+	public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(selector.toString());
+        builder.append(" {\n");
+
+        for (ASTNode node :
+                body) {
+            builder.append("\t");
+            builder.append(node.toString());
+            builder.append("\n");
+        }
+
+        builder.append("}\n\n");
+
+		return builder.toString();
+	}
 }
