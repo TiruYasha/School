@@ -6,19 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-<<<<<<< HEAD
-=======
-        <module name="APPOpdrachten" />
->>>>>>> 2d70cb3c282d1f5e14e84f765ccf933219feca36
-        <module name="sorteeralgoritmen" />
+        <module name="Sort.Sorting" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-<<<<<<< HEAD
-=======
-      <module name="APPOpdrachten" target="1.8" />
->>>>>>> 2d70cb3c282d1f5e14e84f765ccf933219feca36
-      <module name="sorteeralgoritmen" target="1.8" />
+      <module name="Sort.Sorting" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
