@@ -2,7 +2,7 @@ grammar ICSS;
 
 stylesheet: stylesheetsection* EOF;
 
-stylesheetsection: selectorStyle;
+stylesheetsection: selectorStyle | constantDefinition;
 
 selectorStyle: selector SELECTOR_OPEN declaration* SELECTOR_CLOSE;
 
@@ -19,11 +19,16 @@ selector: DECLARATION_STRING #TagSelector|
 
 declaration: declarationProperty COLON expression SEMICOLON;
 
+constantDefinition: 'let' constantReference 'is' expression';';
+
+constantReference: REFERENCE_STRING;
+
 declarationProperty: DECLARATION_STRING;
 
 expression: PIXEL_LITERAL #PixelLiteral |
     PERCENTAGE_LITERAL #PercentageLiteral |
-    COLOR_LITERAL #ColorLiteral;
+    COLOR_LITERAL #ColorLiteral |
+    REFERENCE_STRING #ConstantDefinitionExpression;
 
 COLOR_LITERAL: '#'[a-f0-9]+;
 PIXEL_LITERAL: [0-9]+'px';
@@ -35,14 +40,13 @@ SELECTOR_OPEN: '{';
 SELECTOR_CLOSE: '}';
 
 DECLARATION_STRING: DECLARATION;
+REFERENCE_STRING: '$'[a-zA-Z_]+;
 
-fragment STRING: [a-zA-Z]+;
-fragment DECLARATION: [a-zA-Z-]+;
+STRING: [a-zA-Z]+;
+DECLARATION: [a-zA-Z-]+;
 
 COLON: ':';
 SEMICOLON: ';';
-HASHTAG: '#';
-DOT: '.';
 
 WHITESPACE: [ \t\r\n]+ -> skip;
 

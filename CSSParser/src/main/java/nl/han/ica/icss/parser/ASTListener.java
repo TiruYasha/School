@@ -92,20 +92,63 @@ public class ASTListener extends ICSSBaseListener {
 
     @Override
     public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx){
-        Declaration declaration = (Declaration) currentContainer.peek();
-        declaration.expression = new PixelLiteral(ctx.getText());
+        ASTNode node = currentContainer.peek();
+
+        if(node instanceof Declaration){
+            ((Declaration) node).expression = new PixelLiteral(ctx.getText());
+        } else if(node instanceof ConstantDefinition){
+            ((ConstantDefinition) node).expression = new PixelLiteral(ctx.getText());
+        }
     }
 
     @Override
     public void enterPercentageLiteral(ICSSParser.PercentageLiteralContext ctx){
-        Declaration declaration = (Declaration) currentContainer.peek();
-        declaration.expression = new PercentageLiteral(ctx.getText());
+        ASTNode node = currentContainer.peek();
+
+        if(node instanceof Declaration){
+            ((Declaration) node).expression = new PercentageLiteral(ctx.getText());
+        } else if(node instanceof ConstantDefinition){
+            ((ConstantDefinition) node).expression = new PercentageLiteral(ctx.getText());
+        }
     }
 
     @Override
     public void enterColorLiteral(ICSSParser.ColorLiteralContext ctx){
-        Declaration declaration = (Declaration) currentContainer.peek();
-        declaration.expression = new ColorLiteral(ctx.getText());
+        ASTNode node = currentContainer.peek();
+
+        if(node instanceof Declaration){
+            ((Declaration) node).expression = new ColorLiteral(ctx.getText());
+        } else if(node instanceof ConstantDefinition){
+            ((ConstantDefinition) node).expression = new ColorLiteral(ctx.getText());
+        }
+    }
+
+    @Override
+    public void enterConstantDefinition(ICSSParser.ConstantDefinitionContext ctx){
+        ConstantDefinition def = new ConstantDefinition();
+        currentContainer.push(def);
+    }
+
+    @Override
+    public void exitConstantDefinition(ICSSParser.ConstantDefinitionContext ctx){
+        ast.root.addChild(currentContainer.pop());
+    }
+
+    @Override
+    public void enterConstantReference(ICSSParser.ConstantReferenceContext ctx){
+        ConstantDefinition def = (ConstantDefinition) currentContainer.peek();
+        def.name = new ConstantReference(ctx.getText());
+    }
+
+    @Override
+    public void enterConstantDefinitionExpression(ICSSParser.ConstantDefinitionExpressionContext ctx){
+        ASTNode node = currentContainer.peek();
+
+        if(node instanceof Declaration){
+            ((Declaration) node).expression = new ConstantReference(ctx.getText());
+        } else if(node instanceof ConstantDefinition){
+            ((ConstantDefinition) node).expression = new ConstantReference(ctx.getText());
+        }
     }
 
     public AST getAST() {
