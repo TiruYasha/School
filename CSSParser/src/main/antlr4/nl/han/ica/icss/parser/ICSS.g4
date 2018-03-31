@@ -2,7 +2,7 @@ grammar ICSS;
 
 stylesheet: stylesheetsection* EOF;
 
-stylesheetsection: selectorStyle | constantDefinition;
+stylesheetsection: selectorStyle | constantDefinition | switchrule;
 
 selectorStyle: selector SELECTOR_OPEN declaration* SELECTOR_CLOSE;
 
@@ -36,6 +36,12 @@ expression: PIXEL_LITERAL #PixelLiteral |
 som: expression (calcoperator expression)+;
 
 calcoperator: SUMADD #AddOperator | SUMMULTIPLY #MultiplyOperator | SUMSUBSTRACT #SubstractOperator;
+
+switchrule: selector 'switch' constantReference caserule+ defaultcase;
+
+caserule: 'case' expression SELECTOR_OPEN declaration* SELECTOR_CLOSE;
+defaultcase: 'default' SELECTOR_OPEN declaration* SELECTOR_CLOSE;
+
 
 SUMADD: '+';
 SUMMULTIPLY: '*';

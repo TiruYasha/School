@@ -35,19 +35,26 @@ public class ASTListener extends ICSSBaseListener {
     @Override
     public void enterTagSelector(ICSSParser.TagSelectorContext ctx) {
         TagSelector selector = new TagSelector(ctx.getText());
-        currentContainer.peek().addChild(selector);
+
+        ASTNode node = currentContainer.peek();
+
+        node.addChild(selector);
     }
 
     @Override
     public void enterClassSelector(ICSSParser.ClassSelectorContext ctx) {
         ClassSelector selector = new ClassSelector(ctx.getText());
-        currentContainer.peek().addChild(selector);
+        ASTNode node = currentContainer.peek();
+
+        node.addChild(selector);
     }
 
     @Override
     public void enterIdSelector(ICSSParser.IdSelectorContext ctx) {
         IdSelector selector = new IdSelector(ctx.getText());
-        currentContainer.peek().addChild(selector);
+        ASTNode node = currentContainer.peek();
+
+        node.addChild(selector);
     }
 
     @Override
@@ -77,22 +84,8 @@ public class ASTListener extends ICSSBaseListener {
             currentContainer.pop();
             currentContainer.push(new PixelLiteral(ctx.getText()));
         }
-        else if (node instanceof Operation) {
-            Operation operation = (Operation) node;
-
-            if (operation.lhs == null) {
-
-                operation.lhs = new PixelLiteral(ctx.getText());
-            }
-            else {
-                operation.rhs = new PixelLiteral(ctx.getText());
-            }
-        }
-        else if (node instanceof Declaration) {
-            ((Declaration) node).expression = new PixelLiteral(ctx.getText());
-        }
-        else if (node instanceof ConstantDefinition) {
-            ((ConstantDefinition) node).expression = new PixelLiteral(ctx.getText());
+        else {
+            node.addChild(new PixelLiteral(ctx.getText()));
         }
     }
 
@@ -104,22 +97,8 @@ public class ASTListener extends ICSSBaseListener {
             currentContainer.pop();
             currentContainer.push(new PercentageLiteral(ctx.getText()));
         }
-        else if (node instanceof Operation) {
-            Operation operation = (Operation) node;
-
-            if (operation.lhs == null) {
-
-                operation.lhs = new PercentageLiteral(ctx.getText());
-            }
-            else {
-                operation.rhs = new PercentageLiteral(ctx.getText());
-            }
-        }
-        else if (node instanceof Declaration) {
-            ((Declaration) node).expression = new PercentageLiteral(ctx.getText());
-        }
-        else if (node instanceof ConstantDefinition) {
-            ((ConstantDefinition) node).expression = new PercentageLiteral(ctx.getText());
+        else {
+            node.addChild(new PercentageLiteral(ctx.getText()));
         }
     }
 
@@ -131,22 +110,8 @@ public class ASTListener extends ICSSBaseListener {
             currentContainer.pop();
             currentContainer.push(new ColorLiteral(ctx.getText()));
         }
-        else if (node instanceof Operation) {
-            Operation operation = (Operation) node;
-
-            if (operation.lhs == null) {
-
-                operation.lhs = new ColorLiteral(ctx.getText());
-            }
-            else {
-                operation.rhs = new ColorLiteral(ctx.getText());
-            }
-        }
-        else if (node instanceof Declaration) {
-            ((Declaration) node).expression = new ColorLiteral(ctx.getText());
-        }
-        else if (node instanceof ConstantDefinition) {
-            ((ConstantDefinition) node).expression = new ColorLiteral(ctx.getText());
+        else {
+            node.addChild(new ColorLiteral(ctx.getText()));
         }
     }
 
@@ -158,22 +123,9 @@ public class ASTListener extends ICSSBaseListener {
             currentContainer.pop();
             currentContainer.push(new ScalarLiteral(ctx.getText()));
         }
-        else if (node instanceof Operation) {
-            Operation operation = (Operation) node;
+        else {
 
-            if (operation.lhs == null) {
-
-                operation.lhs = new ScalarLiteral(ctx.getText());
-            }
-            else {
-                operation.rhs = new ScalarLiteral(ctx.getText());
-            }
-        }
-        else if (node instanceof Declaration) {
-            ((Declaration) node).expression = new ScalarLiteral(ctx.getText());
-        }
-        else if (node instanceof ConstantDefinition) {
-            ((ConstantDefinition) node).expression = new ScalarLiteral(ctx.getText());
+            node.addChild(new ScalarLiteral((ctx.getText())));
         }
     }
 
@@ -190,8 +142,9 @@ public class ASTListener extends ICSSBaseListener {
 
     @Override
     public void enterConstantReference(ICSSParser.ConstantReferenceContext ctx) {
-        ConstantDefinition def = (ConstantDefinition) currentContainer.peek();
-        def.name = new ConstantReference(ctx.getText());
+        ASTNode node = currentContainer.peek();
+
+        node.addChild(new ConstantReference(ctx.getText()));
     }
 
     @Override
@@ -202,22 +155,8 @@ public class ASTListener extends ICSSBaseListener {
             currentContainer.pop();
             currentContainer.push(new ConstantReference(ctx.getText()));
         }
-        else if (node instanceof Operation) {
-            Operation operation = (Operation) node;
-
-            if (operation.lhs == null) {
-
-                operation.lhs = new ConstantReference(ctx.getText());
-            }
-            else {
-                operation.rhs = new ConstantReference(ctx.getText());
-            }
-        }
-        else if (node instanceof Declaration) {
-            ((Declaration) node).expression = new ConstantReference(ctx.getText());
-        }
-        else if (node instanceof ConstantDefinition) {
-            ((ConstantDefinition) node).expression = new ConstantReference(ctx.getText());
+        else {
+            node.addChild(new ConstantReference(ctx.getText()));
         }
     }
 
@@ -232,45 +171,74 @@ public class ASTListener extends ICSSBaseListener {
         Operation operation = (Operation) currentContainer.pop();
         ASTNode node = currentContainer.peek();
 
-        if (node instanceof Declaration) {
-            ((Declaration) node).expression = operation;
-        }
-        else if (node instanceof ConstantDefinition) {
-            ((ConstantDefinition) node).expression = operation;
-        }
-
+        node.addChild(operation);
     }
 
     @Override
-    public void enterAddOperator(ICSSParser.AddOperatorContext ctx){
+    public void enterAddOperator(ICSSParser.AddOperatorContext ctx) {
         Expression node = (Expression) currentContainer.pop();
 
         Operation add = new AddOperation();
-        add.lhs =  node;
+        add.lhs = node;
 
         currentContainer.push(add);
     }
 
     @Override
-    public void enterSubstractOperator(ICSSParser.SubstractOperatorContext ctx){
+    public void enterSubstractOperator(ICSSParser.SubstractOperatorContext ctx) {
         Expression node = (Expression) currentContainer.pop();
 
         Operation add = new SubtractOperation();
-        add.lhs =  node;
+        add.lhs = node;
 
         currentContainer.push(add);
     }
 
     @Override
-    public void enterMultiplyOperator(ICSSParser.MultiplyOperatorContext ctx){
+    public void enterMultiplyOperator(ICSSParser.MultiplyOperatorContext ctx) {
         Expression node = (Expression) currentContainer.pop();
 
         Operation add = new MultiplyOperation();
-        add.lhs =  node;
+        add.lhs = node;
 
         currentContainer.push(add);
     }
 
+    @Override
+    public void enterSwitchrule(ICSSParser.SwitchruleContext ctx) {
+        currentContainer.push(new Switchrule());
+    }
+
+    @Override
+    public void exitSwitchrule(ICSSParser.SwitchruleContext ctx) {
+        ast.root.addChild(currentContainer.pop());
+    }
+
+    @Override
+    public void enterCaserule(ICSSParser.CaseruleContext ctx) {
+        currentContainer.push(new SwitchValueCase());
+    }
+
+    @Override
+    public void exitCaserule(ICSSParser.CaseruleContext ctx) {
+        ASTNode value = currentContainer.pop();
+        ASTNode node = currentContainer.peek();
+
+        node.addChild(value);
+    }
+
+    @Override
+    public void enterDefaultcase(ICSSParser.DefaultcaseContext ctx) {
+        currentContainer.push(new SwitchDefaultCase());
+    }
+
+    @Override
+    public void exitDefaultcase(ICSSParser.DefaultcaseContext ctx) {
+        ASTNode value = currentContainer.pop();
+        ASTNode node = currentContainer.peek();
+
+        node.addChild(value);
+    }
 
     public AST getAST() {
         return ast;
