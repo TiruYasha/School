@@ -16,28 +16,7 @@ public class ASTListener extends ICSSBaseListener {
     public ASTListener() {
         ast = new AST();
         currentContainer = new Stack<>();
-
-        //ast.root.addChild(new ConstantDefinition());
-
-
     }
-
-    //Constantdefinition wordt gegenereerd
-    // Maak een enterconstantreference om die knoop value eruit te halen
-    //	public void EnterConstDefinition(ICSSParser.ConstantDefinition ctx){
-    //	    ConstantDefinition def = new ConstantDefinition();
-    //
-    //	    //def.name = new ConstantReference(ctx.getChild(1).getText());
-    //	    def.expression = new PixelLiteral("10px");
-    //
-    //	    //push de constantdefinition
-    //	    currentContainer.push(def);
-    //
-    //	    //Dan kun je in de constantreference peek voor de value
-    //
-    //	    ast.root.addChild(def);
-    //    }
-
 
     @Override
     public void enterSelectorStyle(ICSSParser.SelectorStyleContext ctx) {
@@ -85,71 +64,213 @@ public class ASTListener extends ICSSBaseListener {
     }
 
     @Override
-    public void enterDeclarationProperty(ICSSParser.DeclarationPropertyContext ctx){
+    public void enterDeclarationProperty(ICSSParser.DeclarationPropertyContext ctx) {
         Declaration declaration = (Declaration) currentContainer.peek();
         declaration.property = ctx.getText();
     }
 
     @Override
-    public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx){
+    public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
         ASTNode node = currentContainer.peek();
 
-        if(node instanceof Declaration){
+        if (node == null) {
+            currentContainer.pop();
+            currentContainer.push(new PixelLiteral(ctx.getText()));
+        }
+        else if (node instanceof Operation) {
+            Operation operation = (Operation) node;
+
+            if (operation.lhs == null) {
+
+                operation.lhs = new PixelLiteral(ctx.getText());
+            }
+            else {
+                operation.rhs = new PixelLiteral(ctx.getText());
+            }
+        }
+        else if (node instanceof Declaration) {
             ((Declaration) node).expression = new PixelLiteral(ctx.getText());
-        } else if(node instanceof ConstantDefinition){
+        }
+        else if (node instanceof ConstantDefinition) {
             ((ConstantDefinition) node).expression = new PixelLiteral(ctx.getText());
         }
     }
 
     @Override
-    public void enterPercentageLiteral(ICSSParser.PercentageLiteralContext ctx){
+    public void enterPercentageLiteral(ICSSParser.PercentageLiteralContext ctx) {
         ASTNode node = currentContainer.peek();
 
-        if(node instanceof Declaration){
+        if (node == null) {
+            currentContainer.pop();
+            currentContainer.push(new PercentageLiteral(ctx.getText()));
+        }
+        else if (node instanceof Operation) {
+            Operation operation = (Operation) node;
+
+            if (operation.lhs == null) {
+
+                operation.lhs = new PercentageLiteral(ctx.getText());
+            }
+            else {
+                operation.rhs = new PercentageLiteral(ctx.getText());
+            }
+        }
+        else if (node instanceof Declaration) {
             ((Declaration) node).expression = new PercentageLiteral(ctx.getText());
-        } else if(node instanceof ConstantDefinition){
+        }
+        else if (node instanceof ConstantDefinition) {
             ((ConstantDefinition) node).expression = new PercentageLiteral(ctx.getText());
         }
     }
 
     @Override
-    public void enterColorLiteral(ICSSParser.ColorLiteralContext ctx){
+    public void enterColorLiteral(ICSSParser.ColorLiteralContext ctx) {
         ASTNode node = currentContainer.peek();
 
-        if(node instanceof Declaration){
+        if (node == null) {
+            currentContainer.pop();
+            currentContainer.push(new ColorLiteral(ctx.getText()));
+        }
+        else if (node instanceof Operation) {
+            Operation operation = (Operation) node;
+
+            if (operation.lhs == null) {
+
+                operation.lhs = new ColorLiteral(ctx.getText());
+            }
+            else {
+                operation.rhs = new ColorLiteral(ctx.getText());
+            }
+        }
+        else if (node instanceof Declaration) {
             ((Declaration) node).expression = new ColorLiteral(ctx.getText());
-        } else if(node instanceof ConstantDefinition){
+        }
+        else if (node instanceof ConstantDefinition) {
             ((ConstantDefinition) node).expression = new ColorLiteral(ctx.getText());
         }
     }
 
     @Override
-    public void enterConstantDefinition(ICSSParser.ConstantDefinitionContext ctx){
+    public void enterScalarLiteral(ICSSParser.ScalarLiteralContext ctx) {
+        ASTNode node = currentContainer.peek();
+
+        if (node == null) {
+            currentContainer.pop();
+            currentContainer.push(new ScalarLiteral(ctx.getText()));
+        }
+        else if (node instanceof Operation) {
+            Operation operation = (Operation) node;
+
+            if (operation.lhs == null) {
+
+                operation.lhs = new ScalarLiteral(ctx.getText());
+            }
+            else {
+                operation.rhs = new ScalarLiteral(ctx.getText());
+            }
+        }
+        else if (node instanceof Declaration) {
+            ((Declaration) node).expression = new ScalarLiteral(ctx.getText());
+        }
+        else if (node instanceof ConstantDefinition) {
+            ((ConstantDefinition) node).expression = new ScalarLiteral(ctx.getText());
+        }
+    }
+
+    @Override
+    public void enterConstantDefinition(ICSSParser.ConstantDefinitionContext ctx) {
         ConstantDefinition def = new ConstantDefinition();
         currentContainer.push(def);
     }
 
     @Override
-    public void exitConstantDefinition(ICSSParser.ConstantDefinitionContext ctx){
+    public void exitConstantDefinition(ICSSParser.ConstantDefinitionContext ctx) {
         ast.root.addChild(currentContainer.pop());
     }
 
     @Override
-    public void enterConstantReference(ICSSParser.ConstantReferenceContext ctx){
+    public void enterConstantReference(ICSSParser.ConstantReferenceContext ctx) {
         ConstantDefinition def = (ConstantDefinition) currentContainer.peek();
         def.name = new ConstantReference(ctx.getText());
     }
 
     @Override
-    public void enterConstantDefinitionExpression(ICSSParser.ConstantDefinitionExpressionContext ctx){
+    public void enterConstantDefinitionExpression(ICSSParser.ConstantDefinitionExpressionContext ctx) {
         ASTNode node = currentContainer.peek();
 
-        if(node instanceof Declaration){
+        if (node == null) {
+            currentContainer.pop();
+            currentContainer.push(new ConstantReference(ctx.getText()));
+        }
+        else if (node instanceof Operation) {
+            Operation operation = (Operation) node;
+
+            if (operation.lhs == null) {
+
+                operation.lhs = new ConstantReference(ctx.getText());
+            }
+            else {
+                operation.rhs = new ConstantReference(ctx.getText());
+            }
+        }
+        else if (node instanceof Declaration) {
             ((Declaration) node).expression = new ConstantReference(ctx.getText());
-        } else if(node instanceof ConstantDefinition){
+        }
+        else if (node instanceof ConstantDefinition) {
             ((ConstantDefinition) node).expression = new ConstantReference(ctx.getText());
         }
     }
+
+    @Override
+    public void enterSom(ICSSParser.SomContext ctx) {
+        //Push a null so that the first literal knows it is a som.
+        currentContainer.push(null);
+    }
+
+    @Override
+    public void exitSom(ICSSParser.SomContext ctx) {
+        Operation operation = (Operation) currentContainer.pop();
+        ASTNode node = currentContainer.peek();
+
+        if (node instanceof Declaration) {
+            ((Declaration) node).expression = operation;
+        }
+        else if (node instanceof ConstantDefinition) {
+            ((ConstantDefinition) node).expression = operation;
+        }
+
+    }
+
+    @Override
+    public void enterAddOperator(ICSSParser.AddOperatorContext ctx){
+        Expression node = (Expression) currentContainer.pop();
+
+        Operation add = new AddOperation();
+        add.lhs =  node;
+
+        currentContainer.push(add);
+    }
+
+    @Override
+    public void enterSubstractOperator(ICSSParser.SubstractOperatorContext ctx){
+        Expression node = (Expression) currentContainer.pop();
+
+        Operation add = new SubtractOperation();
+        add.lhs =  node;
+
+        currentContainer.push(add);
+    }
+
+    @Override
+    public void enterMultiplyOperator(ICSSParser.MultiplyOperatorContext ctx){
+        Expression node = (Expression) currentContainer.pop();
+
+        Operation add = new MultiplyOperation();
+        add.lhs =  node;
+
+        currentContainer.push(add);
+    }
+
 
     public AST getAST() {
         return ast;

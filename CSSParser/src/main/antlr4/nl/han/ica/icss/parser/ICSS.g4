@@ -33,10 +33,9 @@ expression: PIXEL_LITERAL #PixelLiteral |
     INT #ScalarLiteral |
     REFERENCE_STRING #ConstantDefinitionExpression;
 
-
 som: expression (calcoperator expression)+;
 
-calcoperator: SUMADD | SUMMULTIPLY | SUMSUBSTRACT;
+calcoperator: SUMADD #AddOperator | SUMMULTIPLY #MultiplyOperator | SUMSUBSTRACT #SubstractOperator;
 
 SUMADD: '+';
 SUMMULTIPLY: '*';
