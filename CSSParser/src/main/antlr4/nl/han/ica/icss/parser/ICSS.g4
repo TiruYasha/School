@@ -17,18 +17,30 @@ selector: DECLARATION_STRING #TagSelector|
           CLASSSELECTOR #ClassSelector |
           IDSELECTOR #IdSelector;
 
-declaration: declarationProperty COLON expression SEMICOLON;
+declaration: declarationProperty COLON value SEMICOLON;
 
-constantDefinition: 'let' constantReference 'is' expression';';
+constantDefinition: 'let' constantReference 'is' value';';
 
 constantReference: REFERENCE_STRING;
 
 declarationProperty: DECLARATION_STRING;
 
+value: som | expression;
+
 expression: PIXEL_LITERAL #PixelLiteral |
     PERCENTAGE_LITERAL #PercentageLiteral |
     COLOR_LITERAL #ColorLiteral |
+    INT #ScalarLiteral |
     REFERENCE_STRING #ConstantDefinitionExpression;
+
+
+som: expression (calcoperator expression)+;
+
+calcoperator: SUMADD | SUMMULTIPLY | SUMSUBSTRACT;
+
+SUMADD: '+';
+SUMMULTIPLY: '*';
+SUMSUBSTRACT: '-';
 
 COLOR_LITERAL: '#'[a-f0-9]+;
 PIXEL_LITERAL: [0-9]+'px';
@@ -42,6 +54,7 @@ SELECTOR_CLOSE: '}';
 DECLARATION_STRING: DECLARATION;
 REFERENCE_STRING: '$'[a-zA-Z_]+;
 
+INT: [0-9]+;
 STRING: [a-zA-Z]+;
 DECLARATION: [a-zA-Z-]+;
 
