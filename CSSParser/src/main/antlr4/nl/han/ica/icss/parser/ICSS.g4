@@ -6,13 +6,6 @@ stylesheetsection: selectorStyle | constantDefinition | switchrule;
 
 selectorStyle: selector SELECTOR_OPEN declaration* SELECTOR_CLOSE;
 
-// Maak een reference voor bv de constname om die op te zoeken in de boom
-// constantReference: CONSTNAME
-// expression: PIXELLITERAL
-// naam geven #PixelLiteral #PercentageLiteral #constReference naar dezelfde regel dat daarvoor is beschreven
-// Expression SUMOP expression #addExpression
-// SUMOP: '+';
-// Addoperation knoop aanmaken die 2 kinderen heeft dus die ook maar weer ns op de stack zetten
 selector: DECLARATION_STRING #TagSelector|
           CLASSSELECTOR #ClassSelector |
           IDSELECTOR #IdSelector;
@@ -25,23 +18,23 @@ constantReference: REFERENCE_STRING;
 
 declarationProperty: DECLARATION_STRING;
 
-value: som | expression;
+value: calc+;
 
-expression: PIXEL_LITERAL #PixelLiteral |
+expressionLiteral: PIXEL_LITERAL #PixelLiteral |
     PERCENTAGE_LITERAL #PercentageLiteral |
     COLOR_LITERAL #ColorLiteral |
     INT #ScalarLiteral |
     REFERENCE_STRING #ConstantDefinitionExpression;
 
-som: expression (calcoperator expression)+;
-
-calcoperator: SUMADD #AddOperator | SUMMULTIPLY #MultiplyOperator | SUMSUBSTRACT #SubstractOperator;
+calc:   expressionLiteral #Expression|
+        calc SUMMULTIPLY calc #MultiplyOperator |
+      calc SUMADD  calc #AddOperator |
+      calc SUMSUBSTRACT calc #SubstractOperator;
 
 switchrule: selector 'switch' constantReference caserule+ defaultcase;
 
-caserule: 'case' expression SELECTOR_OPEN declaration* SELECTOR_CLOSE;
+caserule: 'case' calc SELECTOR_OPEN declaration* SELECTOR_CLOSE;
 defaultcase: 'default' SELECTOR_OPEN declaration* SELECTOR_CLOSE;
-
 
 SUMADD: '+';
 SUMMULTIPLY: '*';
@@ -67,8 +60,3 @@ COLON: ':';
 SEMICOLON: ';';
 
 WHITESPACE: [ \t\r\n]+ -> skip;
-
-
-
-
-

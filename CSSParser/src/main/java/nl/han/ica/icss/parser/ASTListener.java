@@ -80,53 +80,28 @@ public class ASTListener extends ICSSBaseListener {
     public void enterPixelLiteral(ICSSParser.PixelLiteralContext ctx) {
         ASTNode node = currentContainer.peek();
 
-        if (node == null) {
-            currentContainer.pop();
-            currentContainer.push(new PixelLiteral(ctx.getText()));
-        }
-        else {
-            node.addChild(new PixelLiteral(ctx.getText()));
-        }
+        node.addChild(new PixelLiteral(ctx.getText()));
     }
 
     @Override
     public void enterPercentageLiteral(ICSSParser.PercentageLiteralContext ctx) {
         ASTNode node = currentContainer.peek();
 
-        if (node == null) {
-            currentContainer.pop();
-            currentContainer.push(new PercentageLiteral(ctx.getText()));
-        }
-        else {
-            node.addChild(new PercentageLiteral(ctx.getText()));
-        }
+        node.addChild(new PercentageLiteral(ctx.getText()));
     }
 
     @Override
     public void enterColorLiteral(ICSSParser.ColorLiteralContext ctx) {
         ASTNode node = currentContainer.peek();
 
-        if (node == null) {
-            currentContainer.pop();
-            currentContainer.push(new ColorLiteral(ctx.getText()));
-        }
-        else {
-            node.addChild(new ColorLiteral(ctx.getText()));
-        }
+        node.addChild(new ColorLiteral(ctx.getText()));
     }
 
     @Override
     public void enterScalarLiteral(ICSSParser.ScalarLiteralContext ctx) {
         ASTNode node = currentContainer.peek();
 
-        if (node == null) {
-            currentContainer.pop();
-            currentContainer.push(new ScalarLiteral(ctx.getText()));
-        }
-        else {
-
-            node.addChild(new ScalarLiteral((ctx.getText())));
-        }
+        node.addChild(new ScalarLiteral((ctx.getText())));
     }
 
     @Override
@@ -151,57 +126,49 @@ public class ASTListener extends ICSSBaseListener {
     public void enterConstantDefinitionExpression(ICSSParser.ConstantDefinitionExpressionContext ctx) {
         ASTNode node = currentContainer.peek();
 
-        if (node == null) {
-            currentContainer.pop();
-            currentContainer.push(new ConstantReference(ctx.getText()));
-        }
-        else {
-            node.addChild(new ConstantReference(ctx.getText()));
-        }
-    }
-
-    @Override
-    public void enterSom(ICSSParser.SomContext ctx) {
-        //Push a null so that the first literal knows it is a som.
-        currentContainer.push(null);
-    }
-
-    @Override
-    public void exitSom(ICSSParser.SomContext ctx) {
-        Operation operation = (Operation) currentContainer.pop();
-        ASTNode node = currentContainer.peek();
-
-        node.addChild(operation);
+        node.addChild(new ConstantReference(ctx.getText()));
     }
 
     @Override
     public void enterAddOperator(ICSSParser.AddOperatorContext ctx) {
-        Expression node = (Expression) currentContainer.pop();
-
         Operation add = new AddOperation();
-        add.lhs = node;
 
         currentContainer.push(add);
+    }
+
+    @Override
+    public void exitAddOperator(ICSSParser.AddOperatorContext ctx) {
+        ASTNode add = currentContainer.pop();
+
+        currentContainer.peek().addChild(add);
     }
 
     @Override
     public void enterSubstractOperator(ICSSParser.SubstractOperatorContext ctx) {
-        Expression node = (Expression) currentContainer.pop();
+        Operation sub = new SubtractOperation();
 
-        Operation add = new SubtractOperation();
-        add.lhs = node;
+        currentContainer.push(sub);
+    }
+
+    @Override
+    public void exitSubstractOperator(ICSSParser.SubstractOperatorContext ctx) {
+        ASTNode sub = currentContainer.pop();
+
+        currentContainer.peek().addChild(sub);
+    }
+
+    @Override
+    public void enterMultiplyOperator(ICSSParser.MultiplyOperatorContext ctx) {
+        Operation add = new MultiplyOperation();
 
         currentContainer.push(add);
     }
 
     @Override
-    public void enterMultiplyOperator(ICSSParser.MultiplyOperatorContext ctx) {
-        Expression node = (Expression) currentContainer.pop();
+    public void exitMultiplyOperator(ICSSParser.MultiplyOperatorContext ctx) {
+        ASTNode multi = currentContainer.pop();
 
-        Operation add = new MultiplyOperation();
-        add.lhs = node;
-
-        currentContainer.push(add);
+        currentContainer.peek().addChild(multi);
     }
 
     @Override

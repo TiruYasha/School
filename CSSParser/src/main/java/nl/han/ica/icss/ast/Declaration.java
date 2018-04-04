@@ -28,6 +28,6 @@ public class Declaration extends ASTNode {
 
 	@Override
 	public String toString() {
-		return property + ":" + expression.toString() + ";";
+		return property + ": " + expression.toString() + ";";
 	}
 }

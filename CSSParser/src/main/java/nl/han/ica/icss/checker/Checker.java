@@ -17,7 +17,7 @@ public class Checker {
 
         checkRecursive(ast.root);
 
-        checkIfConstantNotUsed(ast.root);
+        checkIfConstantNotUsedOrConstantIsNotDefined(ast.root);
 
         //Save the symbol table.
         ast.symboltable = symboltable;
@@ -27,14 +27,22 @@ public class Checker {
         }
     }
 
-    private void checkIfConstantNotUsed(ASTNode node) {
-        node.getChildren().forEach(this::checkIfConstantNotUsed);
+    //Extra for 3 points. Check if the declaration is never used and the normal one
+    private void checkIfConstantNotUsedOrConstantIsNotDefined(ASTNode node) {
+        node.getChildren().forEach(this::checkIfConstantNotUsedOrConstantIsNotDefined);
 
         if((node instanceof  ConstantReference)){
             long count = visitedNodes.stream().filter(q -> q instanceof ConstantReference && ((ConstantReference) q).name.equals(
                     ((ConstantReference) node).name)).count();
             if(count == 1){
-                node.setError("The declaration is not used. See: " + ((ConstantReference) node).name);
+
+                if(symboltable.containsKey(((ConstantReference) node).name)){
+                    node.setError("The declaration is not used. See: " + ((ConstantReference) node).name);
+                }else{
+                    node.setError("The constantReference is not defined See: " + ((ConstantReference) node).name);
+                }
+
+
             }
         }
     }
