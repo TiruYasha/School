@@ -1,22 +1,35 @@
 module Challenge where
 
-    data Dungeon = Dungeon [Node]
-
     data Node = Node{
         name :: String,
+        nodeLevel :: Int,
         nodes :: [Node]
-    }
+    } deriving(Eq, Show)
+
+    type Dungeon = [Node]
+
+    type StartNode = Node
+    type EndNode = Node
 
     data Settings = Settings{
-        depth :: Int,
-        maxNodesPerNode :: Int,
-        nodeTypes :: [(String, Int)],
-        startType :: String,
-        endType ::String
+        depth :: Int
     }
 
+    mockSettings = Settings {
+        depth = 10
+    }
+
+
     
-    createDungeon settings dungeon =  
+    generateDungeon :: Settings -> Dungeon
+    generateDungeon _ = []
+    generateDungeon settings = generateBranches (depth settings)
+
+    generateBranches :: Int -> Dungeon
+    generateBranches 0 = []
+    generateBranches depth =  [Node{ name = "A", nodeLevel = depth, nodes = generateBranches (depth + (-1))}]
+
+
 
 
 
